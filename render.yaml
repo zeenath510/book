@@ -14,8 +14,8 @@ services:
       - key: DB_NAME
         sync: false
 
-  - type: static
-    name: book-recommendation-frontend
+staticSites:
+  - name: book-recommendation-frontend
     buildCommand: cd myapp && npm install && npm run build
     publishDir: myapp/dist
     routes:
