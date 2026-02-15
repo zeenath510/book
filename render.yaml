@@ -1,3 +1,4 @@
+# Force Update 2
 services:
   - type: web
     name: book-recommendation-backend
@@ -22,3 +23,4 @@ staticSites:
       - type: rewrite
         source: /*
         destination: /index.html
+# Force update 02/15/2026 12:33:41
