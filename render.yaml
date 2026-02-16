@@ -1,15 +1,23 @@
 services:
   - type: web
     name: book-recommendation-backend
-    env: node
-    buildCommand: cd myapp/backend && npm install
-    startCommand: cd myapp/backend && npm start
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
-      - key: DB_HOST
+      - key: MONGO_URI
         sync: false
-      - key: DB_USER
+      - key: JWT_SECRET
         sync: false
-      - key: DB_PASSWORD
-        sync: false
-      - key: DB_NAME
-        sync: false
+
+  - type: web
+    name: book-recommendation-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
