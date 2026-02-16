@@ -13,7 +13,7 @@ router.get("/download/:id", verifyToken, downloadBook);
 // Place advanced search BEFORE /:id to avoid collision if not careful, though here it is specific
 router.get("/advanced-search", require("../controllers/searchController").advancedSearch);
 router.get("/similar/:id", require("../controllers/searchController").getSimilarBooksEnhanced);
-router.get("/search", getBooks); // keeping old simple search or just mapping it to GET /?
+
 
 // @desc    Get all books
 // @route   GET /api/books
@@ -98,55 +98,6 @@ router.delete("/:id", verifyToken, adminOnly, async (req, res) => {
     }
 });
 
-// @desc    Search books
-// @route   GET /api/books/search?q=keyword
-// @access  Public
-router.get("/search", async (req, res) => {
-    const keyword = req.query.q
-        ? {
-            $or: [
-                { title: { $regex: req.query.q, $options: "i" } },
-                { author: { $regex: req.query.q, $options: "i" } },
-                { genre: { $regex: req.query.q, $options: "i" } },
-                { tags: { $regex: req.query.q, $options: "i" } },
-            ],
-        }
-        : {};
 
-    try {
-        const books = await Book.find({ ...keyword });
-        res.json(books);
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-});
-
-// @desc    Get similar books
-// @route   GET /api/books/similar/:id
-// @access  Public
-router.get("/similar/:id", async (req, res) => {
-    try {
-        const currentBook = await Book.findById(req.params.id);
-
-        if (!currentBook) {
-            return res.status(404).json({ success: false, message: "Book not found" });
-        }
-
-        // Heuristic matching: Same Genre > Same Tags > Same Author
-        const similarBooks = await Book.find({
-            _id: { $ne: currentBook._id }, // Exclude current book
-            $or: [
-                { genre: currentBook.genre },
-                { tags: { $in: currentBook.tags } },
-                { author: currentBook.author },
-            ],
-        })
-            .limit(4);
-
-        res.json(similarBooks);
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-});
 
 module.exports = router;
