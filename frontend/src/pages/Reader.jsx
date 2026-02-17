@@ -4,8 +4,6 @@ import HTMLFlipBook from "react-pageflip";
 import { pdfjs, Document, Page } from "react-pdf";
 import { getOfflineBook, saveBookOffline, isBookOffline } from "../services/offlineStorage";
 import { useAuth } from "../context/AuthContext";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
 
 // Set worker 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
