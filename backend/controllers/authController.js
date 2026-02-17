@@ -83,7 +83,10 @@ const setupAdmin = async (req, res) => {
         const adminExists = await User.findOne({ email: adminEmail });
 
         if (adminExists) {
-            return res.status(200).json({ success: true, message: "Admin account already exists." });
+            // Force update role to admin just in case they registered manually
+            adminExists.role = "admin";
+            await adminExists.save();
+            return res.status(200).json({ success: true, message: "Admin account exists. Role updated to 'admin'." });
         }
 
         // Create Admin
