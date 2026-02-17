@@ -74,7 +74,37 @@ const loginUser = async (req, res) => {
     }
 };
 
+// @desc    Setup Admin User (One-time)
+// @route   GET /api/auth/setup-admin
+// @access  Public
+const setupAdmin = async (req, res) => {
+    try {
+        const adminEmail = "admin@example.com";
+        const adminExists = await User.findOne({ email: adminEmail });
+
+        if (adminExists) {
+            return res.status(200).json({ success: true, message: "Admin account already exists." });
+        }
+
+        // Create Admin
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash("admin123", salt);
+
+        await User.create({
+            name: "Admin User",
+            email: adminEmail,
+            password: hashedPassword,
+            role: "admin",
+        });
+
+        res.status(201).json({ success: true, message: "Admin account created. Login with admin@example.com / admin123" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    setupAdmin,
 };
